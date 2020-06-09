@@ -23,7 +23,7 @@ public class AlphaService {
         System.out.println("实例化AlphaService");
     }
 
-    @PostConstruct    //容器初始化，在构造函数后调用
+    @PostConstruct    //Bean初始化，在构造函数后调用
     public void init(){
         System.out.println("初始化AlphaService");
     }
