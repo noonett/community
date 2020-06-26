@@ -46,8 +46,4 @@
     <update id="updatePassword">
         update user set password = #{password} where id = #{id}
     </update>
-
-    <update id="updateActivationCode">
-        update user set activation_code = #{activationCode} where id = #{id}
-    </update>
 </mapper>

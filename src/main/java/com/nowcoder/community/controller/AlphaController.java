@@ -25,19 +25,20 @@ public class AlphaController {
 
     @RequestMapping("/data")
     @ResponseBody           //返回给浏览器的response体
-    public  String getDate(){
+    public String getDate() {
         return alphaService.find();
     }
 
 
     @RequestMapping("/hello")
     @ResponseBody
-    public String sayHello(){
+    public String sayHello() {
         return "Hello Spring Boot.";
     }
+
     /***
-        常规的servlet编程
-    ***/
+     常规的servlet编程
+     ***/
 
     @RequestMapping("/http")
     public void http(HttpServletRequest request, HttpServletResponse response) {
@@ -45,7 +46,7 @@ public class AlphaController {
         System.out.println(request.getMethod());
         System.out.println(request.getServletPath());
         Enumeration<String> enumeration = request.getHeaderNames();
-        while(enumeration.hasMoreElements()){
+        while (enumeration.hasMoreElements()) {
             String name = enumeration.nextElement();
             String value = request.getHeader(name);
             System.out.println(name + ":" + value);
@@ -54,10 +55,10 @@ public class AlphaController {
 
         //返回响应数据
         response.setContentType("text/html;charset=utf-8");
-        try{
+        try {
             PrintWriter writer = response.getWriter();
             writer.write("<h1>牛客网</h1>");
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -70,8 +71,8 @@ public class AlphaController {
     @RequestMapping(path = "students", method = RequestMethod.GET)
     @ResponseBody
     public String getStudents(   //传入的参数,RequestParam还可以设置参数
-            @RequestParam(name = "current", required = false, defaultValue = "1") int current,
-                                 @RequestParam(name = "limit", required = false, defaultValue = "10") int limit){
+                                 @RequestParam(name = "current", required = false, defaultValue = "1") int current,
+                                 @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) {
         System.out.println(current);
         System.out.println(limit);
         return "some students";
@@ -81,7 +82,7 @@ public class AlphaController {
     @RequestMapping(path = "/student/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String getStudent(   //传入的参数,RequestParam还可以设置参数
-                                @PathVariable("id") int id){
+                                @PathVariable("id") int id) {
         System.out.println(id);
         return "a student";
     }
@@ -89,9 +90,9 @@ public class AlphaController {
     /*
         POST请求
      */
-    @RequestMapping(path="/student", method = RequestMethod.POST)
+    @RequestMapping(path = "/student", method = RequestMethod.POST)
     @ResponseBody
-    public String saveStudent(String name, int age){
+    public String saveStudent(String name, int age) {
         System.out.println(name);
         System.out.println(age);
         return "success";
@@ -113,10 +114,10 @@ public class AlphaController {
      */
     //返回响应HTML数据
     @RequestMapping(path = "/teacher", method = RequestMethod.GET)  //不加responsebody，默认返回html
-    public ModelAndView getTeacher(){   //给DispatcherServlet返回的model和view
+    public ModelAndView getTeacher() {   //给DispatcherServlet返回的model和view
         ModelAndView mav = new ModelAndView();
-        mav.addObject("name","张三");
-        mav.addObject("age","30");
+        mav.addObject("name", "张三");
+        mav.addObject("age", "30");
         mav.setViewName("/demo/view");
         return mav;
     }
@@ -124,7 +125,7 @@ public class AlphaController {
     //上面是把view和对象装进model返回model给DispatcherServlet
     //这里是传入前端控制器创建的model实例，然后往里装数据
     @RequestMapping(path = "/school", method = RequestMethod.GET)
-    public String getSchool(Model model){   //返回html的路径
+    public String getSchool(Model model) {   //返回html的路径
         model.addAttribute("name", "悉尼大学");
         model.addAttribute("age", 150);
         return "/demo/view";
@@ -137,7 +138,7 @@ public class AlphaController {
      */
     @RequestMapping(path = "/emp", method = RequestMethod.GET)
     @ResponseBody       //为了返回字符串
-    public Map<String, Object> getEmp(){    //DispatcherServlet看到key-value结构和@Responsebody会自动转为Json字符串传给浏览器
+    public Map<String, Object> getEmp() {    //DispatcherServlet看到key-value结构和@Responsebody会自动转为Json字符串传给浏览器
         Map<String, Object> emp = new HashMap<>();
         emp.put("name", "张三");
         emp.put("age", 23);
@@ -148,7 +149,7 @@ public class AlphaController {
     //返回多个对象，集合形式的JSON字符串
     @RequestMapping(path = "/emps", method = RequestMethod.GET)
     @ResponseBody       //为了返回字符串
-    public List<Map<String, Object>> getEmps(){    //DispatcherServlet看到key-value结构和@Responsebody会自动转为Json字符串传给浏览器
+    public List<Map<String, Object>> getEmps() {    //DispatcherServlet看到key-value结构和@Responsebody会自动转为Json字符串传给浏览器
         List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> emp = new HashMap<>();
         emp.put("name", "张三");
@@ -172,13 +173,13 @@ public class AlphaController {
 
     @RequestMapping(path = "/cookie/set", method = RequestMethod.GET)
     @ResponseBody
-    public String setCookie(HttpServletResponse response){
+    public String setCookie(HttpServletResponse response) {
         //创建cookie
         Cookie cookie = new Cookie("code", CommunityUtil.generateUUID());
         //设置cookie的生效范围
         cookie.setPath("/community/alpha");
         //设置Cookie的生存时间
-        cookie.setMaxAge(60*10);
+        cookie.setMaxAge(60 * 10);
         //发送Cookie
         response.addCookie(cookie);
 
@@ -187,24 +188,33 @@ public class AlphaController {
 
     @RequestMapping(path = "/cookie/get", method = RequestMethod.GET)
     @ResponseBody
-    public String getCookie(@CookieValue("code") String code){
+    public String getCookie(@CookieValue("code") String code) {
         System.out.println(code);
         return "get cookie";
     }
 
     @RequestMapping(path = "/session/set", method = RequestMethod.GET)
     @ResponseBody
-    public String setSession(HttpSession session){
-        session.setAttribute("id",1);
-        session.setAttribute("name","张三");
+    public String setSession(HttpSession session) {
+        session.setAttribute("id", 1);
+        session.setAttribute("name", "张三");
         return "set session";
     }
 
     @RequestMapping(path = "/session/get", method = RequestMethod.GET)
     @ResponseBody
-    public String getSession(HttpSession session){
+    public String getSession(HttpSession session) {
         System.out.println(session.getAttribute("id"));
         System.out.println(session.getAttribute("name"));
         return "get session";
+    }
+
+    // ajax示例
+    @RequestMapping(path = "/ajax", method = RequestMethod.POST)
+    @ResponseBody
+    public String testAjax(String name, int age) {
+        System.out.println(name);
+        System.out.println(age);
+        return CommunityUtil.getJSONString(0, "操作成功！");
     }
 }

@@ -174,73 +174,36 @@ public class UserService implements CommunityConstants {
         return userMapper.updatePassword(userId, password);
     }
 
-    /**
-     * 忘记密码
-     * @param password
-     * @param email
-     */
-    public Map<String, Object> forget(String email, String password, String code) {
+    // 重置密码
+    public Map<String, Object> resetPassword(String email, String password) {
         Map<String, Object> map = new HashMap<>();
 
-        //空值判断
+        // 空值处理
         if (StringUtils.isBlank(email)) {
-            map.put("emailMsg", "邮箱不能为空！");
+            map.put("emailMsg", "邮箱不能为空!");
             return map;
         }
         if (StringUtils.isBlank(password)) {
-            map.put("passwordMsg", "密码不能为空！");
-            return map;
-        }
-        if (StringUtils.isBlank(code)) {
-            map.put("codeMsg", "验证码不能为空！");
+            map.put("passwordMsg", "密码不能为空!");
             return map;
         }
 
+        // 验证邮箱
         User user = userMapper.selectByEmail(email);
-        //账号验证
         if (user == null) {
-            map.put("emailMsg", "邮箱不存在！");
+            map.put("emailMsg", "该邮箱尚未注册!");
             return map;
         }
-        //验证码验证
-        if (!user.getActivationCode().equals(code)) {
-            map.put("codeMsg", "验证码不正确！");
-            return map;
-        }
-        userMapper.updatePassword(user.getId(), CommunityUtil.md5(password + user.getSalt()));
 
+        // 重置密码
+        password = CommunityUtil.md5(password + user.getSalt());
+        userMapper.updatePassword(user.getId(), password);
+
+        map.put("user", user);
         return map;
     }
 
-    /**
-     * 生成验证码，发送邮件
-     * @param email
-     */
-    public Map<String, Object> codeEmail(String email) {
-        Map<String, Object> map = new HashMap<>();
-        //空值判断
-        if (StringUtils.isBlank(email)) {
-            map.put("emailMsg", "邮箱不能为空！");
-            return map;
-        }
-        User user = userMapper.selectByEmail(email);
-        //账号验证
-        if (user == null) {
-            map.put("emailMsg", "邮箱不存在！");
-            return map;
-        }
-        //设置验证码
-        String code = CommunityUtil.generateUUID().substring(0, 5);
-        userMapper.updateActivationCode(user.getId(), code);
-        //激活邮件
-        Context context = new Context();
-        context.setVariable("email", user.getEmail());
-        //code
-        context.setVariable("code", code);
-        String content = templateEngine.process("/mail/forget", context);
-        mailClient.sendMail(user.getEmail(), "重置密码", content);
-
-        map.put("codeMsg", "已成功发送验证码至您邮箱，请注意查收！");
-        return map;
+    public User findUserByName(String username){
+        return userMapper.selectByName(username);
     }
 }
