@@ -247,4 +247,5 @@ public class UserService implements CommunityConstants {
         String userKey = RedisKeyUtil.getUserKey(userId);
         redisTemplate.delete(userKey);
     }
+
 }

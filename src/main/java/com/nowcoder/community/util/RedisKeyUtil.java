@@ -9,6 +9,8 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTCHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
+    private static final String PREFIX_USER_POST = "user:post";
+    private static final String PREFIX_USER_COMMENT = "user:comment";
 
     // 某个实体的赞
     // like:entity:entityType:entityId -> set(userId)
@@ -48,5 +50,17 @@ public class RedisKeyUtil {
     // 用户
     public static String getUserKey(int userId) {
         return PREFIX_USER + SPLIT + userId;
+    }
+
+    // 用户的回复
+    public static String getUserCommentKey(int userId, int commentId) {
+        return PREFIX_USER_POST + SPLIT + userId + SPLIT + commentId;
+    }
+
+    // 用户的帖子
+    // user:post:userId:postId
+    // user:comment:userId:commentId
+    public static String getUserPostKey(int userId, int postId) {
+        return PREFIX_USER_POST + SPLIT + userId + SPLIT + postId;
     }
 }

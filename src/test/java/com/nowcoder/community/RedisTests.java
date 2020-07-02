@@ -1,5 +1,6 @@
 package com.nowcoder.community;
 
+import com.nowcoder.community.util.RedisKeyUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,18 +52,20 @@ public class RedisTests {
         Object obj = redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations redisOperations) throws DataAccessException {
-                String redisKey = "test:tx";
+                String redisKey = "test:testnull";
                 redisOperations.multi();
 
-                redisOperations.opsForSet().add(redisKey, "张三");
-                redisOperations.opsForSet().add(redisKey, "李四");
-                redisOperations.opsForSet().add(redisKey, "王武");
-
-                System.out.println(redisOperations.opsForSet().members(redisKey));
+                redisOperations.opsForSet().size(redisKey);
 
                 return redisOperations.exec();
             }
         });
         System.out.println(obj);
+    }
+
+    @Test
+    void testNUll(){
+        String redisKey = RedisKeyUtil.getUserLike(1000);
+        System.out.println(redisTemplate.opsForValue().size(redisKey));
     }
 }
