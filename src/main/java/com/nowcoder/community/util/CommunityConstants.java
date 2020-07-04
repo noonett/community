@@ -32,4 +32,16 @@ public interface CommunityConstants {
      * 实体类型：用户
      */
     int ENTITY_TYPE_USER = 3;
+
+    /**
+     * 事件主题
+     */
+    String TOPIC_COMMENT = "comment";
+    String TOPIC_LIKE = "like";
+    String TOPIC_FOLLOW = "follow";
+
+    /**
+     * 系统用户Id
+     */
+    int SYSTEM_USERID = 1;
 }
