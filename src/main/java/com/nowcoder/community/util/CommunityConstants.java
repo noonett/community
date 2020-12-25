@@ -39,9 +39,31 @@ public interface CommunityConstants {
     String TOPIC_COMMENT = "comment";
     String TOPIC_LIKE = "like";
     String TOPIC_FOLLOW = "follow";
-
+    String TOPIC_PUBLISH = "publish";
+    String TOPIC_DELETE = "delete";
+    String TOPIC_SHARE = "share";
     /**
      * 系统用户Id
      */
     int SYSTEM_USERID = 1;
+
+    /**
+     * 用户权限：普通用户
+     */
+    String AUTHORITY_USER = "user";
+
+    /**
+     * 管理员
+     */
+    String AUTHORITY_ADMIN = "admin";
+
+    /**
+     * 版主
+     */
+    String AUTHORITY_MODERATOR = "moderator";
+
+    /**
+     * 帖子类型：置顶
+     */
+    int DISCUSSPOST_TYPE_TOP = 1;
 }

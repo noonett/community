@@ -11,6 +11,9 @@ public class RedisKeyUtil {
     private static final String PREFIX_USER = "user";
     private static final String PREFIX_USER_POST = "user:post";
     private static final String PREFIX_USER_COMMENT = "user:comment";
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
+    private static final String PREFIX_POST = "post";
 
     // 某个实体的赞
     // like:entity:entityType:entityId -> set(userId)
@@ -62,5 +65,30 @@ public class RedisKeyUtil {
     // user:comment:userId:commentId
     public static String getUserPostKey(int userId, int postId) {
         return PREFIX_USER_POST + SPLIT + userId + SPLIT + postId;
+    }
+
+    // 单日UV 单日独立访客，到达本网站的IP数量包括匿名用户，hyperloglog用于去重，空间小
+    public static String getUVkey(String date) {
+        return PREFIX_UV + SPLIT + date;
+    }
+
+    // 区间UV
+    public static String getUVkey(String startDate, String endDate) {
+        return PREFIX_UV + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    // 单日DAU 单日活跃用户ID，bitmap也是去重，精确
+    public static String getDAUkey(String date) {
+        return PREFIX_DAU + SPLIT + date;
+    }
+
+    // 区间DAU
+    public static String getDAUkey(String startDate, String endDate) {
+        return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    // 计算帖子分数的key
+    public static String getPostScoreKey(){
+        return PREFIX_POST+ SPLIT + "score";
     }
 }

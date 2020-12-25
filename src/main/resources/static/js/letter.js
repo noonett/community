@@ -4,6 +4,14 @@ $(function () {
 });
 
 function send_letter() {
+
+    // 发送AJAX请求之前，将CSRF令牌设置到请求的消息头中
+    // var token = $("meta[name = '_csrf']").attr("content");
+    // var header = $("meta[name = '_csrf_header']").attr("content");
+    // $(document).ajaxSend(function (e, xhr, options) {
+    //     xhr.setRequestHeader(header, token);
+    // });
+
     $("#sendModal").modal("hide");
 
     var toName = $("#recipient-name").val();
@@ -28,6 +36,14 @@ function send_letter() {
 }
 
 function delete_msg() {
+
+    // 发送AJAX请求之前，将CSRF令牌设置到请求的消息头中
+    var token = $("meta[name = '_csrf']").attr("content");
+    var header = $("meta[name = '_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
     // 删除数据
     var letterId = $("#letterId").val();
     $.post(

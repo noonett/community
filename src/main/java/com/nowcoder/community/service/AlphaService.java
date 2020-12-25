@@ -1,13 +1,18 @@
 package com.nowcoder.community.service;
 
+import com.nowcoder.community.controller.advice.ExceptionAdvice;
 import com.nowcoder.community.dao.AlphaDao;
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.util.CommunityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -24,6 +29,8 @@ import java.util.Date;
 @Service
 //@Scope("prototype")            //Bean的作用域默认是单例的Singleton,多例prototype
 public class AlphaService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
     @Autowired      //Service依赖Dao层实现查询
     private AlphaDao alphaDao;
@@ -108,5 +115,20 @@ public class AlphaService {
                 return "OK";
             }
         });
+    }
+
+    // 让该方法在多线程环境下被异步调用
+    @Async
+    public void execute1(){
+        logger.debug("execute1");
+
+    }
+
+    // 注解配置
+//    @Scheduled(initialDelay = 1000, fixedDelay = 1000)
+//    @Async
+    public void execute2(){
+        logger.debug("execute2");
+
     }
 }

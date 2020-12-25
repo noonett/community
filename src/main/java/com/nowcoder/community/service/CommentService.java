@@ -25,6 +25,10 @@ public class CommentService implements CommunityConstants {
     @Autowired
     private SensitiveFilter sensitiveFilter;
 
+    public List<Comment> findCommentsByUserId(int userId, int offset, int limit) {
+        return commentMapper.selectCommentsByUserId(userId, offset, limit);
+    }
+
     public List<Comment> findCommentsByEntity(int entityType, int entityId, int offset, int limit) {
         return commentMapper.selectCommentsByEntity(entityType, entityId, offset, limit);
     }
@@ -54,5 +58,9 @@ public class CommentService implements CommunityConstants {
         }
 
         return rows;
+    }
+
+    public int updateCommentStatus(int status, int id) {
+        return commentMapper.updateStatus(status, id);
     }
 }

@@ -1,9 +1,18 @@
 package com.nowcoder.community.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 //映射SQL中表的entity类
 public class User {
+
+//  implements UserDetails
+//  spring security 映射的接口
 
     private int id;
     private String username;
@@ -27,6 +36,48 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+//    // true: 账号未过期
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    // true：账号未锁定
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    // true：凭证未过期
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    // true：账号可用
+//    @Override
+//    public boolean isEnabled() {
+//        return true;
+//    }
+//
+//    // 用户具备的权限
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        List<GrantedAuthority> list = new ArrayList<>();
+//        list.add(new GrantedAuthority() {
+//            @Override
+//            public String getAuthority() {
+//                switch (type){
+//                    case 1:
+//                        return "ADMIN";
+//                    default:
+//                        return "USER";
+//                }
+//            }
+//        });
+//        return list;
+//    }
 
     public void setUsername(String username) {
         this.username = username;

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -163,6 +164,7 @@ public class LoginController implements CommunityConstants {
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
+        SecurityContextHolder.clearContext();
         return "redirect:/login";
     }
 
@@ -180,6 +182,10 @@ public class LoginController implements CommunityConstants {
             return CommunityUtil.getJSONString(1, "邮箱不能为空！");
         }
 
+        if (userService.findUserByEmail(email) == null) {
+            return CommunityUtil.getJSONString(1, "使用该邮箱的用户不存在！");
+        }
+
         // 发送邮件
         Context context = new Context();
         context.setVariable("email", email);
@@ -188,8 +194,9 @@ public class LoginController implements CommunityConstants {
         String content = templateEngine.process("/mail/forget", context);
         mailClient.sendMail(email, "找回密码", content);
 
+        String emailCode = email + ":" + code;
         // 保存验证码
-        session.setAttribute("verifyCode", code);
+        session.setAttribute("verifyCode", emailCode);
 
         return CommunityUtil.getJSONString(0);
     }
@@ -197,15 +204,19 @@ public class LoginController implements CommunityConstants {
     // 重置密码
     @RequestMapping(path = "/forget/password", method = RequestMethod.POST)
     public String resetPassword(String email, String verifyCode, String password, Model model, HttpSession session) {
-        String code = (String) session.getAttribute("verifyCode");
-        if (StringUtils.isBlank(verifyCode) || StringUtils.isBlank(code) || !code.equalsIgnoreCase(verifyCode)) {
+        String emailCode = (String) session.getAttribute("verifyCode");
+        String[] str = emailCode.split(":");
+        String codeEmail = str[0];
+        String code = str[1];
+        if (StringUtils.isBlank(verifyCode) || StringUtils.isBlank(code) || !(code.equalsIgnoreCase(verifyCode) && codeEmail.equalsIgnoreCase(email))) {
             model.addAttribute("codeMsg", "验证码错误!");
             return "/site/forget";
         }
 
         Map<String, Object> map = userService.resetPassword(email, password);
         if (map.containsKey("user")) {
-            return "redirect:/login";
+            model.addAttribute("initMsg", "找回密码成功！");
+            return "/site/login";
         } else {
             model.addAttribute("emailMsg", map.get("emailMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));

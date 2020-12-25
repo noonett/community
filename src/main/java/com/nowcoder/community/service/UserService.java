@@ -1,7 +1,5 @@
 package com.nowcoder.community.service;
 
-import com.mysql.cj.log.Log;
-import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
@@ -13,18 +11,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService implements CommunityConstants {
+//       UserDetailsService,
+// security检查登陆，用的接口，底层根据username查用户，判断账号密码
 
     @Autowired
     private UserMapper userMapper;
@@ -53,6 +51,10 @@ public class UserService implements CommunityConstants {
             user = initCache(id);
         }
         return user;
+    }
+
+    public User findUserByEmail(String email) {
+        return userMapper.selectByEmail(email);
     }
 
     public Map<String, Object> register(User user) {
@@ -213,7 +215,7 @@ public class UserService implements CommunityConstants {
         // 验证邮箱
         User user = userMapper.selectByEmail(email);
         if (user == null) {
-            map.put("emailMsg", "该邮箱尚未注册!");
+            map.put("emailMsg", "该邮箱不存在!");
             return map;
         }
 
@@ -248,4 +250,31 @@ public class UserService implements CommunityConstants {
         redisTemplate.delete(userKey);
     }
 
+    // 查询某用户权限的方法
+    public Collection<? extends GrantedAuthority> getAuthorities(int userId) {
+        User user = this.findUserById(userId);
+
+        List<GrantedAuthority> list = new ArrayList<>();
+        list.add(new GrantedAuthority() {
+
+            @Override
+            public String getAuthority() {
+                switch (user.getType()) {
+                    case 1:
+                        return AUTHORITY_ADMIN;
+                    case 2:
+                        return AUTHORITY_MODERATOR;
+                    default:
+                        return AUTHORITY_USER;
+                }
+            }
+        });
+        return list;
+    }
+
+//    // spring-security
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        return findUserByName(username);
+//    }
 }

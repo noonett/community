@@ -11,6 +11,17 @@
         user_id, entity_type, entity_id, target_id, content, status, create_time
     </sql>
 
+    <select id="selectCommentsByUserId" resultType="Comment">
+        select
+        <include refid="selectFields"></include>
+        from comment
+        where status = 0
+        <if test="userId!=0">
+            and user_id = #{userId}
+        </if>
+        order by create_time DESC limit #{offset}, #{limit}
+    </select>
+
     <select id="selectCommentsByEntity" resultType="Comment">
         select
         <include refid="selectFields"></include>
@@ -40,4 +51,8 @@
         insert into comment(<include refid="insertFields"></include>)
         values (#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime})
     </insert>
+
+    <update id="updateStatus">
+        update comment set status = #{status} where id = #{id}
+    </update>
 </mapper>
