@@ -14,6 +14,7 @@ public class RedisKeyUtil {
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
     private static final String PREFIX_POST = "post";
+    private static final String PREFIX_LOCK = "lock";
 
     // 某个实体的赞
     // like:entity:entityType:entityId -> set(userId)
@@ -90,5 +91,10 @@ public class RedisKeyUtil {
     // 计算帖子分数的key
     public static String getPostScoreKey(){
         return PREFIX_POST+ SPLIT + "score";
+    }
+
+    // 锁的key
+    public static String getLockKey(String serviceName){
+        return PREFIX_LOCK + SPLIT + serviceName;
     }
 }

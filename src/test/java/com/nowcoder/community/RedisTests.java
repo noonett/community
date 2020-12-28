@@ -1,6 +1,8 @@
 package com.nowcoder.community;
 
+import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.RedisKeyUtil;
+import com.nowcoder.community.util.RedisLock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,12 +12,18 @@ import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.*;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
 public class RedisTests {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private RedisLock redisLock;
 
     @Test
     public void testStrings() {
@@ -166,5 +174,45 @@ public class RedisTests {
         });
         System.out.println(obj);
         System.out.println(redisTemplate.opsForValue().getBit(redisKey, 0));
+    }
+
+    @Test
+    public void testRedisLock() throws InterruptedException {
+        String serviceName = "test";
+        String key = RedisKeyUtil.getLockKey(serviceName);
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+
+        for (int i = 0; i < 5; i++) {
+            Thread.sleep((long) Math.random() * 1000);
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    String token = CommunityUtil.generateUUID();
+                    System.out.println(Thread.currentThread() + "--线程开始尝试锁！");
+                    try {
+                        if (redisLock.lock(key, token, 3)) {
+                            System.out.println(Thread.currentThread() + "--线程获取锁成功！");
+                            Thread.sleep(2000);
+                            if (redisLock.unLock(key, token)) {
+                                System.out.println(Thread.currentThread() + "--线程释放锁！");
+                            } else {
+                                System.out.println(Thread.currentThread() + "--锁已超时释放！");
+                            }
+
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        Thread.sleep(10000);
+    }
+
+    @Test
+    void testUnLock() {
+        String serviceName = "test";
+        String key = RedisKeyUtil.getLockKey(serviceName);
+        redisLock.unLock(key, CommunityUtil.generateUUID());
     }
 }
