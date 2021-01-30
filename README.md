@@ -13,7 +13,7 @@
 
 ### 主要技术
 - 前端：Thymeleaf、JQuery、CSS、HTML
-- 应用服务器：Spring，SpringMVC，SpringSecurity、Mybatis、Quartz、Caffeine
+- 应用服务器：Spring，SpringMVC，SpringSecurity、Mybatis、Quartz、Caffeine、wkhtmltoimage
 - 消息队列：Kafka
 - 缓存层：Redis
 - 数据层：MySQL、Elasticsearch（搜索）
@@ -28,7 +28,7 @@
 7. 基于Elasticsearch实现关键词搜索。
 8. 基于Kafka消息队列，实现响应与数据库写入、Elasticsearch更新的分离，达到快速响应。
 9. 基于Quartz实现分布式定时任务，完成帖子热度刷新的任务。
-10. 基于七牛云对象存储存用户头像和生成的长图。
+10. 七牛云对象存储存用户头像和生成的长图。
 
 ### 分布式部署
 ![网站架构图](https://github.com/noonett/PictureBed/blob/master/网站架构图.png?raw=true)
