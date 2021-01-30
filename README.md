@@ -12,7 +12,7 @@
 6. 分享模块：生成长图分享帖子内容
 
 ### 主要技术
-- 前端：Thymeleaf、JQuery、CSS、Html
+- 前端：Thymeleaf、JQuery、CSS、HTML
 - 应用服务器：Spring，SpringMVC，SpringSecurity、Mybatis、Quartz、Caffeine
 - 消息队列：Kafka
 - 缓存层：Redis
