@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.util.RedisKeyUtil;
 import com.nowcoder.community.util.SensitiveFilter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -29,6 +31,9 @@ public class DiscussPostService {
 
     @Autowired
     private SensitiveFilter sensitiveFilter;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Value("${caffeine.posts.max-size}")
     private int maxSize;
@@ -64,9 +69,20 @@ public class DiscussPostService {
                         int offset = Integer.valueOf(params[0]);
                         int limit = Integer.valueOf(params[1]);
 
-                        // 可以加二级缓存Redis
-                        logger.debug("load post rows from DB.");
-                        return discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
+                        // 二级缓存Redis
+                        String listKey = RedisKeyUtil.getPostListKey(offset, limit);
+                        List<DiscussPost> list = redisTemplate.opsForList().range(listKey, 0, -1);
+                        // 有缓存直接返回
+                        if (list == null || list.size()==0) {
+                            // list为空，二级缓存失效, 更新二级缓存
+                            logger.debug("load post rows from DB.");
+                            list = discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
+                            if (list != null && list.size() != 0) {
+                                redisTemplate.opsForList().rightPushAll(listKey, list);
+                                redisTemplate.expire(listKey, (int)(Math.random() * expireSeconds) + expireSeconds, TimeUnit.SECONDS);
+                            }
+                        }
+                        return list;
                     }
                 });
         // 初始化帖子总数缓存

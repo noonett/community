@@ -12,6 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -91,6 +92,7 @@ public class ThreadPoolTest {
             threadPoolTaskExecutor.submit(task);
         }
         sleep(10000);
+
     }
 
     //4. Spring定时任务线程池
@@ -109,10 +111,37 @@ public class ThreadPoolTest {
 
     //5. Spring普通线程池（简化）
     @Test
-    public void testThreadPoolTaskExecutorSimple(){
+    public void testThreadPoolTaskExecutorSimple() {
         for (int i = 0; i < 10; i++) {
             alphaService.execute1();
         }
         sleep(10000);
+    }
+
+    @Test
+    public void testThreadLocal() {
+        ExecutorService executors = Executors.newFixedThreadPool(5);
+        for (int i = 0; i < 5; i++) {
+            executors.execute(new Runnable() {
+                @Override
+                public void run() {
+                    ThreadLocal<String>threadLocal = new ThreadLocal<>();
+                    threadLocal.set(Thread.currentThread().getName());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(
+                            Thread.currentThread().getName() + "--" + threadLocal.get()
+                    );
+                }
+            });
+        }
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

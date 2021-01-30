@@ -1,6 +1,7 @@
 package com.nowcoder.community;
 
 import com.nowcoder.community.util.CommunityUtil;
+import com.nowcoder.community.util.RateLimiter.DistributedRateLimiter;
 import com.nowcoder.community.util.RedisKeyUtil;
 import com.nowcoder.community.util.RedisLock;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ public class RedisTests {
 
     @Autowired
     private RedisLock redisLock;
+
+    @Autowired
+    private DistributedRateLimiter distributedRateLimiter;
 
     @Test
     public void testStrings() {
@@ -210,9 +214,24 @@ public class RedisTests {
     }
 
     @Test
-    void testUnLock() {
+    public void testRateLimiter() throws InterruptedException {
         String serviceName = "test";
-        String key = RedisKeyUtil.getLockKey(serviceName);
-        redisLock.unLock(key, CommunityUtil.generateUUID());
+        String key = RedisKeyUtil.getRateLimiterKey(serviceName);
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+
+        for (int i = 0; i < 50; i++) {
+            Thread.sleep((long) Math.random() * 100);
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+//                    try {
+//                        System.out.println(distributedRateLimiter.getToken(key));
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+                }
+            });
+        }
+        Thread.sleep(10000);
     }
 }

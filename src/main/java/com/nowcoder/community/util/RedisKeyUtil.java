@@ -15,6 +15,7 @@ public class RedisKeyUtil {
     private static final String PREFIX_DAU = "dau";
     private static final String PREFIX_POST = "post";
     private static final String PREFIX_LOCK = "lock";
+    private static final String PREFIX_RATELIMITER = "ratelimiter";
 
     // 某个实体的赞
     // like:entity:entityType:entityId -> set(userId)
@@ -97,4 +98,20 @@ public class RedisKeyUtil {
     public static String getLockKey(String serviceName){
         return PREFIX_LOCK + SPLIT + serviceName;
     }
+
+    // RateLimiter的key
+    public static String getRateLimiterKey(String serviceName){
+        return PREFIX_RATELIMITER + SPLIT + serviceName;
+    }
+
+    // RateLimiter的update time的key
+    public static String getRateLimiterTimeKey(String rateLimiterKey){
+        return rateLimiterKey + SPLIT + "time";
+    }
+
+    // 帖子列表的key
+    public static String getPostListKey(int offset, int limit){
+        return PREFIX_POST + SPLIT + offset +SPLIT + limit;
+    }
+
 }

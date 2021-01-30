@@ -24,9 +24,6 @@ public class RedisLock {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Autowired
-    private ThreadPoolTaskScheduler scheduler;
-
     // 获取锁超时时间
     @Value("${redisLock.timeout}")
     private long timeout;
