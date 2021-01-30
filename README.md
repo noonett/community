@@ -30,5 +30,5 @@
 9. 基于Quartz实现分布式定时任务，完成帖子热度刷新的任务。
 10. 七牛云对象存储存用户头像和生成的长图。
 
-### 分布式部署
+### 分布式部署设计
 ![网站架构图](https://github.com/noonett/PictureBed/blob/master/网站架构图.png?raw=true)
