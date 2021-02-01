@@ -31,4 +31,4 @@
 10. 七牛云对象存储存用户头像和生成的长图。
 
 ### 分布式部署设计
-![网站架构图](https://github.com/noonett/PictureBed/blob/master/网站架构图.png?raw=true)
+![网站架构图](https://gitee.com/noonett/PictureBed/raw/master/网站架构图2.png)
