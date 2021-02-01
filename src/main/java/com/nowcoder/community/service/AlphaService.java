@@ -2,10 +2,12 @@ package com.nowcoder.community.service;
 
 import com.nowcoder.community.controller.advice.ExceptionAdvice;
 import com.nowcoder.community.dao.AlphaDao;
+import com.nowcoder.community.dao.AlphaDaoHibernateImpl;
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.exception.RatelimiterException;
 import com.nowcoder.community.util.CommunityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,7 @@ public class AlphaService {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
     @Autowired      //Service依赖Dao层实现查询
-    private AlphaDao alphaDao;
+    private AlphaDaoHibernateImpl alphaDao;
 
     @Autowired
     private UserMapper userMapper;
@@ -43,6 +45,10 @@ public class AlphaService {
 
     public String find() {   //模拟一个查询
         return alphaDao.select();
+    }
+
+    public String throwRLException() throws RatelimiterException {   //模拟一个查询
+        return alphaDao.get();
     }
 
     public AlphaService() {

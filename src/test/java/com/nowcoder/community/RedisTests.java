@@ -1,5 +1,9 @@
 package com.nowcoder.community;
 
+import com.nowcoder.community.dao.AlphaDao;
+import com.nowcoder.community.dao.AlphaDaoHibernateImpl;
+import com.nowcoder.community.exception.GlobalExceptionResolver;
+import com.nowcoder.community.exception.RatelimiterException;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.RateLimiter.DistributedRateLimiter;
 import com.nowcoder.community.util.RedisKeyUtil;
@@ -28,6 +32,9 @@ public class RedisTests {
 
     @Autowired
     private DistributedRateLimiter distributedRateLimiter;
+
+    @Autowired
+    private AlphaDaoHibernateImpl alphaDao;
 
     @Test
     public void testStrings() {
@@ -214,7 +221,7 @@ public class RedisTests {
     }
 
     @Test
-    public void testRateLimiter() throws InterruptedException {
+    public void testRateLimiter() throws InterruptedException, RatelimiterException {
         String serviceName = "test";
         String key = RedisKeyUtil.getRateLimiterKey(serviceName);
         ExecutorService executorService = Executors.newFixedThreadPool(100);
@@ -224,11 +231,11 @@ public class RedisTests {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-//                    try {
-//                        System.out.println(distributedRateLimiter.getToken(key));
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        System.out.println(alphaDao.get());
+                    } catch (RatelimiterException e) {
+
+                    }
                 }
             });
         }

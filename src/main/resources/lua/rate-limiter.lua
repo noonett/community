@@ -9,9 +9,10 @@ if(tokens > 0)
     then redis.call('set', KEYS[2], currentTime)
         if(tokens > tokensLimit)
             then redis.call('set', KEYS[1],  tokensLimit - 1)
-                resultValue = tokensLimit - 1
+                resultValue = tokensLimit
             else redis.call('set', KEYS[1],  tokens - 1)
         end
+    resultValue = resultValue - 1
     return resultValue
 else
     return -1

@@ -27,7 +27,7 @@ public class DistributedRateLimiter {
         String updateTimeKey = RedisKeyUtil.getRateLimiterTimeKey(tokenKey);
         long startTime = System.currentTimeMillis();
         int tryTimes = 0; long result = -1;
-        while (result != -1) {
+        while (result == -1) {
             // 超时失败
             if (System.currentTimeMillis() - startTime > timeout) {
                 logger.error("执行时间过长,终止任务:" + tokenKey);

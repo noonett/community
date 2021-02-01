@@ -1,5 +1,6 @@
 package com.nowcoder.community.controller;
 
+import com.nowcoder.community.exception.RatelimiterException;
 import com.nowcoder.community.service.AlphaService;
 import com.nowcoder.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,6 +216,13 @@ public class AlphaController {
     public String testAjax(String name, int age) {
         System.out.println(name);
         System.out.println(age);
+        return CommunityUtil.getJSONString(0, "操作成功！");
+    }
+
+    @RequestMapping(path = "/testrl", method = RequestMethod.POST)
+    @ResponseBody
+    public String test(int id) throws RatelimiterException {
+        alphaService.throwRLException();
         return CommunityUtil.getJSONString(0, "操作成功！");
     }
 }
