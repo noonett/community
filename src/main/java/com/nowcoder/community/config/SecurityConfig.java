@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
 
     // 认证
     // AuthenticationManager：认证的核心接口
-    // AuthenticationManager：用于构建AuthenticationManager对象的工具
+    // AuthenticationManagerBuilder：用于构建AuthenticationManager对象的工具
     // ProvideManager: AuthenticationManager默认的实现类
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {

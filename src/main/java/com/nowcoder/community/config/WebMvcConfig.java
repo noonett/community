@@ -9,8 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private AlphaInterceptor alphaInterceptor;
+//    @Autowired
+//    private AlphaInterceptor alphaInterceptor;
 
     @Autowired
     private LoginTicketInterceptor loginTicketInterceptor;
@@ -27,9 +27,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // 通过传入的registry来注册, 需要配置作用范围
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(alphaInterceptor)   //静态资源不需要拦截
-                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg")
-                .addPathPatterns("/register", "/login");
+//        registry.addInterceptor(alphaInterceptor)   //静态资源不需要拦截
+//                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg")
+//                .addPathPatterns("/register", "/login");
 
         registry.addInterceptor(loginTicketInterceptor)   //静态资源不需要拦截
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");

@@ -253,7 +253,6 @@ public class UserService implements CommunityConstants {
     // 查询某用户权限的方法
     public Collection<? extends GrantedAuthority> getAuthorities(int userId) {
         User user = this.findUserById(userId);
-
         List<GrantedAuthority> list = new ArrayList<>();
         list.add(new GrantedAuthority() {
 

@@ -1,7 +1,6 @@
 package com.nowcoder.community.exception;
 
-public class RatelimiterException extends Exception{
-
+public class RatelimiterException extends Exception {
     private String message;
 
     public RatelimiterException(String message) {

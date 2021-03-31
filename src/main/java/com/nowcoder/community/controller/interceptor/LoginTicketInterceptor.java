@@ -47,7 +47,6 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             }
         }
-
         return true;
     }
 

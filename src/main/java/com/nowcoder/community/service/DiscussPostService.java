@@ -75,7 +75,7 @@ public class DiscussPostService {
                         // 有缓存直接返回
                         if (list == null || list.size()==0) {
                             // list为空，二级缓存失效, 更新二级缓存
-                            logger.debug("load post rows from DB.");
+                            //logger.debug("load post rows from DB.");
                             list = discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
                             if (list != null && list.size() != 0) {
                                 redisTemplate.opsForList().rightPushAll(listKey, list);
@@ -93,7 +93,7 @@ public class DiscussPostService {
                     @Nullable
                     @Override
                     public Integer load(@NonNull Integer key) throws Exception {
-                        logger.debug("load post rows from DB.");
+                        //logger.debug("load post rows from DB.");
                         return discussPostMapper.selectDiscussPostRows(key);
                     }
                 });
@@ -105,7 +105,7 @@ public class DiscussPostService {
         if (userId == 0 && orderMode == 1) {
             return postListCache.get(offset + ":" + limit);
         }
-        logger.debug("Load posts list from DB.");
+        //logger.debug("Load posts list from DB.");
         return discussPostMapper.selectDiscussPosts(userId, offset, limit, orderMode);
     }
 
@@ -118,7 +118,7 @@ public class DiscussPostService {
             return postRowsCache.get(userId);
         }
 
-        logger.debug("load post rows from DB.");
+        // logger.debug("load post rows from DB.");
         return discussPostMapper.selectDiscussPostRows(userId);
     }
 

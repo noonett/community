@@ -1,9 +1,11 @@
 package com.nowcoder.community.controller;
 
+import com.nowcoder.community.controller.websocket.endpoint.LetterNoticeWebSocketEndPoint;
 import com.nowcoder.community.exception.RatelimiterException;
 import com.nowcoder.community.service.AlphaService;
 import com.nowcoder.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-@Controller  //有这样的注解的bean才会被扫描或者@service, @Repository,他们都是由@Component实现的
+@Controller //有这样的注解的bean才会被扫描或者@service, @Repository,他们都是由@Component实现的
 @RequestMapping("/alpha")
 public class AlphaController {
 
@@ -224,5 +226,12 @@ public class AlphaController {
     public String test(int id) throws RatelimiterException {
         alphaService.throwRLException();
         return CommunityUtil.getJSONString(0, "操作成功！");
+    }
+
+    @RequestMapping("/testln")
+    @ResponseBody
+    public String testLetternotice() throws IOException {
+        LetterNoticeWebSocketEndPoint.notifyNewLetter(154, "test", "测试成功！");
+        return "Hello Spring Boot.";
     }
 }

@@ -1,6 +1,7 @@
 package com.nowcoder.community.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nowcoder.community.controller.websocket.endpoint.LetterNoticeWebSocketEndPoint;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.Event;
 import com.nowcoder.community.entity.Message;
@@ -90,13 +91,11 @@ public class EventConsumer implements CommunityConstants {
         content.put("userId", event.getUserId());
         content.put("entityType", event.getEntityType());
         content.put("entityId", event.getEntityId());
-
         if (!event.getData().isEmpty()) {
             for (Map.Entry<String, Object> entry : event.getData().entrySet()) {
                 content.put(entry.getKey(), entry.getValue());
             }
         }
-
         message.setContent(JSONObject.toJSONString(content));
         messageService.addMessage(message);
     }
