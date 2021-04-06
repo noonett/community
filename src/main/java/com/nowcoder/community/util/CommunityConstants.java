@@ -42,6 +42,7 @@ public interface CommunityConstants {
     String TOPIC_PUBLISH = "publish";
     String TOPIC_DELETE = "delete";
     String TOPIC_SHARE = "share";
+    String TOPIC_BROADCAST = "broadcast";
     /**
      * 系统用户Id
      */

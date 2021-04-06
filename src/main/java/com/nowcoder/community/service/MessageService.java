@@ -69,4 +69,8 @@ public class MessageService {
     public List<Message> findNotices(int userId, String topic, int offset, int limit) {
         return messageMapper.selectNotices(userId, topic, offset, limit);
     }
+
+    public Message findNotification(int noticeId){
+        return new Message();
+    }
 }

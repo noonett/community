@@ -2,15 +2,18 @@ package com.nowcoder.community.controller.websocket.endpoint;
 
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
+import com.nowcoder.community.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +36,16 @@ public class LetterNoticeWebSocketEndPoint {
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
+    public static boolean contains(int sid){
+        return webSockets.containsKey(sid);
+    }
+
+
+    public static void notifyNewLetter(int toId) throws IOException {
+        if (webSockets.containsKey(toId)) {
+            webSockets.get(toId).sendMessage(CommunityUtil.getJSONString(1, "新消息提醒！"));
+        }
+    }
     /***
      * 提醒 toId 用户有新消息到来
      * @param toId  消息接受方
@@ -76,6 +89,7 @@ public class LetterNoticeWebSocketEndPoint {
         logger.error("WebSocket发生错误!");
         error.printStackTrace();
     }
+
 
     @OnClose
     public void onClose() {

@@ -28,9 +28,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 
 @Component
@@ -133,6 +131,41 @@ public class EventConsumer implements CommunityConstants {
         }
 
         elasticsearchService.deleteDiscussPost(event.getEntityId());
+    }
+
+    // 消费新消息通知事件
+    @KafkaListener(topics = {TOPIC_BROADCAST})
+    public void handleLetterNotice(ConsumerRecord record) throws IOException {
+        if (record == null || record.value() == null) {
+            logger.error("消息的内容为空!");
+            return;
+        }
+
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        if (event == null) {
+            logger.error("消息格式错误!");
+            return;
+        }
+
+        if (event.getData().isEmpty()) {
+            logger.error("消息内数据为空!");
+            return;
+        }
+
+        Object obj = event.getData().get("messageId");
+
+        if (obj == null) {
+            logger.error("消息id列表为空!");
+            return;
+        }
+
+        String ids = (String) obj;
+        List<Integer> idList = JSONObject.parseObject(ids, ArrayList.class);
+        for (int id : idList) {
+            if (LetterNoticeWebSocketEndPoint.contains(id)) {
+                LetterNoticeWebSocketEndPoint.notifyNewLetter(id);
+            }
+        }
     }
 
     // 消费分享事件
